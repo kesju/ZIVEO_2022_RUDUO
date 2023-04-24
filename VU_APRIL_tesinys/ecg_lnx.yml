@@ -1,0 +1,22 @@
+name: ecg_lnx
+channels:
+  - defaults
+dependencies:
+ - python=3.7
+ - tensorflow
+ - scikit-learn=1.0.1
+ - conda-forge::neurokit2=0.1.4.1
+ - conda-forge::bitstring
+ - icecream
+ - cython
+ - jupyter
+ - ipython
+ - pandas
+ - numpy
+ - matplotlib
+ - pip
+ - pip:
+    - scikit-fda
+    - sklearn 
+    - wget
+

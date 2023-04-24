@@ -1,0 +1,21 @@
+name: ecg
+channels:
+  - defaults
+dependencies:
+ - python=3.9
+ - tensorflow
+ - scikit-learn=1.0.1
+ - conda-forge::neurokit2
+ - conda-forge::bitstring
+ - icecream
+ - jupyter
+ - ipython
+ - pandas
+ - numpy
+ - matplotlib
+ - pip
+ - pip:
+    - scikit-fda
+    - sklearn 
+    - wget
+

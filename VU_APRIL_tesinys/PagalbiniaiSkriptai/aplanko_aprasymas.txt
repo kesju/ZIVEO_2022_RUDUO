@@ -1,0 +1,2 @@
+Aplanke PagalbiniaiSkriptai yra įvairūs pagalbiniai skriptai, skirti įvairių
+funkcijų testavimui, duomenų perdirbimui, rezultatų analizei

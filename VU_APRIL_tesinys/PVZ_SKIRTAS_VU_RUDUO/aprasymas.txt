@@ -1,0 +1,53 @@
+
+Testinis_skriptas_FDA_pozymiams.py - programa, demonstruojanti pertvarkytų skriptų požymiams skaičiuoti 
+darbą.
+
+Pertvarkyti skriptai yra "get_spike_width(orig, derivate, reample_points, positions)" ir
+"get_beat_features_fda(signal, atr_sample, idx)", kurie pakeičia originalius "apply_FDA(train_set_idx, all_beats_attr)" 
+ir "get_spike_width(orig, derivate, reample_points, positions)" atitinkamai. Originalūs skriptai Povilo
+atsiųsti 2022 rugsėjį.
+ 
+Skriptas "get_spike_width(orig, derivate, reample_points, positions)" praktiškai nesiskiria nuo 
+"get_spike_width(orig, derivate, reample_points, positions)", tik tiek, kad jame 
+nebenaudojamos funkcijos append (Deprecated since version 1.4.0: Use concat() instead)
+ir atiduoda datafreimo eilutę su 0-niu indeksu.
+
+Skriptas "get_beat_features_fda(signal, atr_sample, idx)" nuo skripto "apply_FDA_origin(train_set_idx, all_beats_attr)"
+skiriasi tuo, kad:
+
+- skaičiuoja požymių eilutę  tik vienam užduoto EKG signalo (signal) užduotam pūpsniui (idx). Signalo pūpsnių rpeaks
+  vietos nurodytos faile atr_sample. Požymių masyvas atiduodamas datafreimo eilutės su 0-niu indeksu pavidalu.
+  Jei apskaičiuoti požymių eilutės nepavyksta, atiduodamas pūpsnio indeksas omitted datafreimo pavidalu.
+
+- skripte visiškai atsisakyta append funkcijos, dėka skaičiavimai žymiai pagreitėjo.
+
+- skripte nebėra požymio 'label', jis nėra požymių dalis, jis, jei to reikia, pasiimamas iš json failo,
+  kuris lydi EKG įrašą.
+
+- požymių skaičiavimas visai nesurištas su failais train_set_idx, all_beats_attr, nors organizuojant skaičiavimus
+  juos galima ir toliau naudoti.
+	
+Pridėtas pavyzdys "Testinis_skriptas_FDA_pozymiams.py" demonstruoja, kaip galima panaudojant
+"get_beat_features_fda(signal, atr_sample, idx)" suformuoti požymių masyvą užduotam 
+pacientų įrašų sąrašui.
+	
+Nurodytas požymių skaičiavimo skripto formatas ("get_beat_features_fda(signal, atr_sample, idx)") naudojamas
+Zive sistemoje, todėl gavus naujus požymių skaičiavimo skriptus tokiu formatu, žymiai pagreitėtų skripto
+integracija į sistemą. Sukūrus naują modelį ir požymių skaičiavimo būdą, sėkmingam skriptų integravimui į Zive,
+reiktų: 
+	
+- aplanko su modeliu
+- scaler.pkl failo
+- features vardų sąrašo
+- skripto požymių skaičiavimui, atitinkančio "get_beat_features_fda(signal, atr_sample, idx)" formatą.
+	
+Dar būtų gerai apskaičiuotų požymių reikšmių, pvz. paimant iš MIT duomenų EKG įrašą pacientui 100 ir
+apskaičiuojant požymius pvz. pirmiems 10 pūpsnių. Tada galima būtų įsitikinti, kad gaunu tuos pačius rezultatus.
+	
+
+Pastaba: faile "original_fda_scripts.py" pateikti man Povilo atsiųsti 2022 rugsėjį skriptai 
+"apply_FDA(train_set_idx, all_beats_attr)" ir "get_spike_width(orig, derivate, reample_points, positions)",
+kurie skirti požymių ir omitted masyvų skaičiavimui visiems užduotiems EKG įrašų pūpsniams
+(pūpsnių rpeaks vietos - nurodytos faile all_beats_attr, kuriems pūpsniams skaičiuoti - nurodyta faile
+train_set_idx). Failai all_beats_attr, train_set_idx paruošiami iš anksto turimiems Zive ir MIT2ZIVE duomenims.
+

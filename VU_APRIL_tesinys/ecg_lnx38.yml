@@ -1,0 +1,19 @@
+name: ecg_lnx38
+#Variantas is Zive Docker
+channels:
+  - defaults
+dependencies:
+ - python=3.8
+ - cffi=1.14.3 #this version is essential, otherwise fdasrsf pulls in v1.15 that causes symbol incompatibilities with libffi
+ - tensorflow=2.6.0
+ - keras=2.6.0
+ - scikit-learn=1.0.1
+ - conda-forge::neurokit2=0.1.5
+ - conda-forge::bitstring=4.0.1
+ - conda-forge::fdasrsf=2.3.12
+ - cython=0.29.32
+ - pandas=1.5.1
+ - numpy=1.21.5
+ - pip
+ - pip:
+    - scikit-fda==0.7.1

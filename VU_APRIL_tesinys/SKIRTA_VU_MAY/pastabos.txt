@@ -1,0 +1,37 @@
+
+
+Ką reikia papildomai instaliuoti:
+- pip install scikit-fda
+- pip install scipy
+
+1. scikit-fda
+	• Windows
+		a. su python 3.7.13 (conda ecg_lnx) neina, instaliuoti scikit-fda su conda nepavyksta
+		
+		b. eina su python 3.9.12 (conda ecg), pandas 1.3.5, numpy 1.19.5
+		scikit-fda                0.7.1                    pypi_0    pypi
+		scikit-learn              1.0.1            py39he931e04_3    conda-forge
+		scikit-plot               0.3.7                    pypi_0    pypi
+		scipy                     1.7.3  
+		
+
+	• Ubuntu 20.04, dirbu su conda ecg_lnx:
+		○ python 3.7.11, pandas 1.3.5, numpy 1.21.2
+		scikit-fda                0.7.1                    pypi_0    pypi
+		scikit-learn              1.0.1            py39he931e04_3    conda-forge
+		scikit-plot               0.3.7                    pypi_0    pypi
+		scipy                     1.7.3  
+		
+		
+
+
+	• Docker su Conda
+
+
+
+
+Apdorojimo ypatybės:
+-	Modelio parametrai įrašyti h5 formatu
+-	Aritmijų atpažinimui paduodami paduodama visas EKG įrašas ir failas su anotacijų atributais: idx, sample, label
+-   Po apdorojimo, klasifikatorius gražina freimą su: anotacijų atributais: idx, sample, label, y_pred
+

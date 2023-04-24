@@ -1,0 +1,14 @@
+Pagrindinis modulis klasifikacijai: zive_cnn_fda_vu_v1.py, į kurį sudėtos visos jūsų sukurtos funkcijos
+ir dar keletas pagalbinių, reikalingų prisitaikymui prie ZIVE aplinkos. Į šias funkcijas Zive kreipiasi
+iš analysis.py (aiškumo dėlei pridedu) per  funkciją classify_cnn_fda_vu_v1:
+
+classification = classify_cnn_fda_vu_v1(zive_read_file_1ch(args.fileName), atr_sample=analysis_results['rpeaks'], 
+                                                  model_dir='model_cnn_fda_vu_v1', prediction_labels=['N', 'S', 'V', 'U'])
+
+Visi jūsų atsiųsti modelio parametrai saugomi aplanke: model_cnn_fda_vu_v1 (nepridedu, nes tai tas pats,
+ką aš gavau aplanke all_ft).
+
+Modulyje zive_cnn_fda_vu_v1.py jūsų funkcijose yra smulkūs pataisymai, bet svarbiausias turbūt yra tai, kad RRl ir RRr
+nenuskaitomas iš all_beats_attr, o apskaičiuojamas su funkcija read_RR_arr_from_signal(atr_sample, idx, nl_steps=1, nr_steps=1).
+
+ 

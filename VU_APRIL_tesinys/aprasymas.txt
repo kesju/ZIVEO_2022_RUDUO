@@ -1,0 +1,186 @@
+Naujausi papildymai: 2022 11 10
+
+Po pataisymų, svarbiausi skriptai duomenų paruošimui yra (žr. D:\DI\ZIVEO_2022_RUDUO\VU_APRIL_tesinys):
+
+- 0_mit2zive_creat_npy_v2.ipynb - MIT duomenis paverčia į Zive formatą ir kartu su įrašų vardų sąrašu 'all_subjcode_lst_m.csv' įrašo į 'records_npy'
+- 0_zive_collect_list_v2.ipynb - papildo laikiną talpyklą 'records' įrašais iš 'buffer'
+- 1_zive_select_records_v2.ipynb - atrenka talpykloje 'records' pagal užduotą algoritmą įrašus ir perrašo į atrinktų įrašų talpyklą 'records_selected'
+- 3_zive_creat_npy_v3.ipynb - įrašus iš 'records_selected' paverčia į npy formatą, pakeičia vardus į paprastesnius, analogiškus mit2zive, sukūria žodyną df_transl.csv, sukuria visų įrašų vardų sąrašų failą 'all_subjcode_lst_z.csv', viską įrašo į 'records_npy' 
+
+Duomenų analizei svarbiausi yra:
+- 9_test_zive&mit.ipynb - atrenka, nuskaito ir parodo užduoto tipo pūpsnius
+- 6_zive_accuracy_cnn_vu_v3_test_batch_micro_be_all_attrib.ipynb - klasifikuoja pūpsnius ir išveda išsamią informaciją bei pūpsnius
+
+Skriptų pavyzdžiai, kaip reikia dirbti, pateikti:
+- D:\DI\ZIVEO_2022_RUDUO\VU_APRIL_tesinys\PVZ_SKIRTAS_VU_RUDUO
+
+
+Programinė aplinka:
+
+Windows:
+
+conda-forge::neurokit2=0.1.4.1
+conda install conda-forge::neurokit2=0.1.4.1
+
+Bandyta sukurti naudojant ecg_lnx.yml aplinką ecg_lnx1 su neurokit2 0.1.4.1.
+Tam naudojau komandą: conda env create -f ecg_lnx.yml
+tačiau nepavyko. Tada rankomis seniau sukurtoje aplinkoje ecg_lnx išinstaliavau neurokit2 0.5.1 
+su komanda: conda uninstall neurokit2 
+ir po to instaliavau neurokit2 0.1.4.1 su komanda:
+conda install conda-forge::neurokit2=0.1.4.1
+
+Tokiu būdu žeminau versijas:
+0.1.7
+0.1.5
+0.1.4.1
+0.1.3
+
+
+Čia sudėtos visos naujausios programos, dirbančios su VU algoritmais, po to, kai buvo pakeista Zive talpykla.
+Darbas pradėtas 2022 03 24.
+
+ Naudojama tokia schema:
+- surenkami originalūs anotuoti duomenys
+- transformuojami į vietinį formatą (surenkami visi pacientų įrašai į pacientų įrašų rinkinius, tie rinkiniai yra
+  apmažinami atrenkant įrašus su ekstrasistolėmis, įvedama virtuali numeracija, kurioje atsispindi įrašo 
+  priklausomybė pacientui, pakeičiamas duomenų formatas į numpy formatą). Tai įgalina patogiau dirbti su pacientais,
+  skaičiavimai dėl formato vyksta greičiau.
+- padalijami pacientai su savo įrašais į dalis mokymui, validavimui, testavimui ir suformuojami failai, kurie toliau 
+  naudojami klasifikatoriaus kūrimui.    
+
+Programos atkartoja duomenų struktūrą, kuri buvo ir anksčiau, kai kartu su duomenimis xxxxx.npy ir xxxxx.json,
+padalijus pacientus į train, validation dalis, pateikiami klasifikatoriaus kūrimui failai: all_beats_attr.csv,
+train_ind_lst.csv, validate_ind_lst. Tačiau didėjant imtims, šie pagalbiniai failai labai didėja ir gali sukelti
+problemas. 
+
+Todėl toliau planuojama vietoj failų all_beats_attr.csv, train_ind_lst.csv, validate_ind_lst, naudoti df_list_npy.json,
+train_lst.csv, validate_lst.csv  ir atitinkamas funkcijas, kurios formuoja seniau naudotus ind_lst. Planuojama,
+kad struktūra pasidarys vaizdesnė ir šie pagalbiniai failai bus mažesni. Gal net atsikratysime nuo df_list_npy
+(kuris suformuojams iš įrašų failų xxxxx.json).
+
+Visos programos saugomos github.com VU_APRIL projekte (kesju/Raktas135), nauja struktūra bus VU_MAY
+
+Dabartinės schemos (VU_APRIL) detalizacija:
+ 
+1.	Duomenys atsisiunčiami iš Zive ir įrašomi į aplanką buffer:  SVARBUS
+ 
+buffer:
+xxxxxxx.xxx
+xxxxxxx.xxx.json
+................
+................
+................
+xxxxxxx.xxx
+xxxxxxx.xxx.json
+ 
+2.	0_zive_collect_list_v2.ipynb perrašo iš buffer  aplanko į aplanką records įrašus, kurie nėra aplanke records,
+    sudaro įrašų ir jų atributų sąrašą formatu list.json, list.csv:  SVARBUS
+ 
+records:
+xxxxxxx.xxx
+xxxxxxx.xxx.json
+................
+................
+................
+xxxxxxx.xxx
+xxxxxxx.xxx.json
+list.json
+list.csv
+ 
+ 
+3.	1_zive_select_records_v2.ipynb atrenka pagal užduotą algoritmą įrašus  klasifikatorių mokymui ir vertinimui  ir perrašo
+    juos į aplanką records_selected, sudaro atrinktų įrašų ir jų atributų sąrašą formatu list.json:   SVARBUS
+ 
+records_selected:
+xxxxxxx.xxx -> EKG įrašo failas
+xxxxxxx.xxx.json -> EKG įrašo atributų failas
+................
+................
+................
+xxxxxxx.xxx
+xxxxxxx.xxx.json
+list.json -> EKG įrašų atributų sąrašas
+list.csv
+ 
+4.	2_zive_analiz_list_v2.ipynb išveda iš list.json sąrašą patogesnėje formoje, su anotacijų pasiskirstymu per įrašus ir
+    pacientus. Galima naudoti tiek aplanke records, tiek aplanke records_selected - pagalbinis, nebūtinas, visa informacija
+    pateikiama  skripte 1_zive_select_records_v2
+ 
+ 
+5.	3_zive_creat_npy_v3.ipynb, panaudodama 0_zive_select_records_v2.ipynb  suformuotą aplanke records_selected sąrašą list.json,
+    visiems įrašams userId pakeičiamas į userNr - skaičiumi, pradedant nuo 1000, įrašo įdentifikatorius file_name pakeičiamas
+    į įrašo eilės numerį registrationNr, lygų 0,1,... ir sukuriamas naujas failo vardas SubjCode str(userNr) + str(registrationNr)
+    Konversijai ir saugojimui panaudojamas transliatoriaus masyvas df_transl (failas transl.csv), kuris panaudojamas
+    originalaus paciento kodo userID atkūrimui.
+    Visi failai perpavadinami naujais vardais ir perrašomi į aplanką records_npy, keičiant duomenų formatą į numpy formatą ir 
+    įtraukiant failo vardą SubjCode į sąrašą list.json Suformuojamas informacinis failas info_create_z.json su su SubjCode
+    sąrašu bei EKG įrašų atributų sąrašas list.json, abu jie įrašomi į diską:   SVARBUS
+ 
+records_npy:
+yyyyyy.npy -> EKG įrašo failas
+yyyyyy.json -> EKG įrašo atributų failas
+..........
+..........
+..........
+yyyyyy.npy
+yyyyyy.json
+df_transl.csv
+info_create_z.json
+list_npy.json  -> modifikuotas EKG įrašų atributų sąrašas pridedant įrašų virtualius failo vardus SubjCode
+ 
+ 
+6.	4_zive_creat_beats_attrib_v3.ipynb - sukuria all_beats_attr, suformuoja label, RRl, RRr. Naudoja list.json,
+    info_create_z.json. Taip pat padalija pacientus į dalis: train, validate, test, sukuria tų dalių SubjCode
+    sąrašus ir įrašo juos į diską.
+ 
+yyyyyy.npy
+yyyyyy.json
+..........
+..........
+..........
+yyyyyy.npy
+yyyyyy.json
+df_transl.csv
+info_create_z.json
+list_npy.json
+all_beats_attr.csv
+train_subjcode_lst.csv, validate_subjcode_lst.csv, test_subjcode_lst.validate
+ 
+7. 5_zive_prep_ind_v3_nbal.ipynb. Panaudojant pacientų įrašų vardų SubjCode sąrašus train_lst, validate_lst, 
+   test_lst iš disko, sukūriami atitinkami indeksų failai train_ind_lst, validate_ind_lst, test_ind_lst ir
+   įrašomi į diską. Kartu su duomenimis ir all_beats_attr, jie naudojami klasifikatorių kūrimui. 
+
+yyyyyy.npy
+yyyyyy.json
+..........
+..........
+..........
+yyyyyy.npy
+yyyyyy.json
+df_transl.csv
+info_create_z.json
+list_npy.json
+all_beats_attr.csv
+train_subjcode_lst.csv, validate_subjcode_lst.csv, test_subjcode_lst.csv
+train_ind_lst.csv, validate_ind_lst.csv, test_ind_lst.csv
+
+
+
+
+Bandymų medžiagai parengti buvo panaudotas skriptas convert_file_name.ipynb, kurio pagalba ankstesni failai su failu vardais,
+kurie buvo recordingID buvo paversti į failus su vardais file_name.
+
+Bandymams skirti 2 skriptai:
+6_zive_accuracy_cnn_vu_v1_test.ipynb
+6_zive_accuracy_cnn_vu_v2_test.ipynb
+
+6_zive_accuracy_cnn_vu_v1_test.ipynb- šitas variantas yra atsarginis, kad įsitikinti, kad klasifikacija dirba taip pat, kaip ir su 
+originaliais įrašais, nepaverstais į npy formatą ir naudojant failų vardams SubjCode.
+
+Tačiau labiau naudotinas variantas 6_zive_accuracy_cnn_vu_v2_test.ipynb, nes npy formatu dirba ir VU komanda.
+
+Abu variantai turi galimybę išvesti ekstrasistolių vietas įraše, kurias galima toliau stebėti zive EKG grafiniame vaizde. 
+Dirbant su daug įrašų reiktų užblokuoti: classification = []  # Užblokuota
+ 
+
+
