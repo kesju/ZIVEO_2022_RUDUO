@@ -18,6 +18,35 @@ def zive_read_file_1ch(filename):
     ecg_signal = b - np.mean(b)
     return ecg_signal
 
+
+def read_signal(rec_dir, filename):
+    """
+    Tinka EKG įrašų skaitymui tiek zive, tiek mit2zive atveju.
+    zive atveju filename pvz. 1621694.321, 1621694.321.json
+    mit2zive atveju, pvz. 100.000, 100.000.json - dalis iki taško ne ilgesnė
+    už 4 simbolius
+
+    Parameters
+    ------------
+        rec_dir: string
+        filename: string
+    Return
+    -----------
+        signl: numpy array, float
+    """   
+    file_path = Path(filename)
+    name = file_path.stem
+    file_path = Path(rec_dir, filename)
+    
+    if len(name) < 7:
+        with open(file_path, "rb") as f:
+            signl_loaded = np.load(f) 
+        return signl_loaded
+    else:        
+        signl_loaded = zive_read_file_1ch(file_path)
+        return signl_loaded
+
+
 def AnalyseHeartrate(ecg_signal_df):
     _, rpeaks = nk.ecg_peaks(ecg_signal_df['orig'], sampling_rate=200, method="neurokit", correct_artifacts=False)
     ret = {'rpeaks':rpeaks['ECG_R_Peaks'].tolist()}
